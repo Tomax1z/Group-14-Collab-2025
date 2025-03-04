@@ -26,17 +26,21 @@ void AProtoMech::BeginPlay()
 
 void AProtoMech::MoveMech(float influence)
 {
+	//Calculate distance and mech speed
 	float addMechForce = influence * _MoveSpeed;
 	float calculateSplineDistance = addMechForce + _SplineLength;
 	_SplineLength = calculateSplineDistance;
-	
+
+	//Update mech transform 
 	FTransform mechTransform;
 	mechTransform.SetLocation(_MechSpline->GetTransformAtDistanceAlongSpline(_SplineLength, ESplineCoordinateSpace::Local, false).GetLocation());
 	mechTransform.SetRotation(_MechSpline->GetTransformAtDistanceAlongSpline(_SplineLength, ESplineCoordinateSpace::Local, false).GetRotation());
 	mechTransform.SetScale3D(_MechSpline->GetRelativeScale3D());
-	
+
+	//Update the relative transform
 	_MechMesh->SetRelativeTransform(mechTransform);
 
+	//Loop functionality
 	if (_Loop && _SplineLength > _MechSpline->GetSplineLength())
 	{
 		_SplineLength = 0;
@@ -48,6 +52,7 @@ void AProtoMech::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    //Use Delta time right now for prototyping but later I will use input values instead
 	MoveMech(DeltaTime);
 }
 
