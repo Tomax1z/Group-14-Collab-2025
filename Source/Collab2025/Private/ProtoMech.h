@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "ProtoMech.generated.h"
 
+class UBoxComponent;
+
 UCLASS()
 class COLLAB2025_API AProtoMech : public AActor
 {
@@ -31,6 +33,8 @@ protected:
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> _MechMesh;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UBoxComponent> _MechCollision;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> _MechSpline;
 

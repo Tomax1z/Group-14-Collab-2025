@@ -3,6 +3,8 @@
 
 #include "ProtoMech.h"
 
+#include "Components/BoxComponent.h"
+
 
 // Sets default values
 AProtoMech::AProtoMech()
@@ -10,11 +12,16 @@ AProtoMech::AProtoMech()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_Root = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Root"));
-	_MechMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mech Mesh"));
-	_MechMesh -> SetupAttachment(_Root);
+	_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	
 	_MechSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Mech Spline"));
 	_MechSpline -> SetupAttachment(_Root);
+	
+	_MechMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mech Mesh"));
+	_MechMesh -> SetupAttachment(_MechSpline);
+	
+	_MechCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	_MechCollision->SetupAttachment(_MechMesh);
 }
 
 // Called when the game starts or when spawned
@@ -35,7 +42,7 @@ void AProtoMech::MoveMech(float influence)
 	FTransform mechTransform;
 	mechTransform.SetLocation(_MechSpline->GetTransformAtDistanceAlongSpline(_SplineLength, ESplineCoordinateSpace::Local, false).GetLocation());
 	mechTransform.SetRotation(_MechSpline->GetTransformAtDistanceAlongSpline(_SplineLength, ESplineCoordinateSpace::Local, false).GetRotation());
-	mechTransform.SetScale3D(_MechSpline->GetRelativeScale3D());
+	mechTransform.SetScale3D(_MechMesh->GetRelativeScale3D());
 
 	//Update the relative transform
 	_MechMesh->SetRelativeTransform(mechTransform);
