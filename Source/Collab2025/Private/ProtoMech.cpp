@@ -4,6 +4,7 @@
 #include "ProtoMech.h"
 
 #include "Components/BoxComponent.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 
 
 // Sets default values
@@ -28,7 +29,8 @@ AProtoMech::AProtoMech()
 void AProtoMech::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SpawnGrabArm();
 }
 
 void AProtoMech::MoveMech(float influence)
@@ -61,5 +63,31 @@ void AProtoMech::Tick(float DeltaTime)
 
     //Use Delta time right now for prototyping but later I will use input values instead
 	MoveMech(DeltaTime);
+}
+
+void AProtoMech::SpawnGrabArm()
+{
+	if (_GrabArmClass)
+	{
+		// Spawn the grab arm
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+
+		_GrabArm = GetWorld()->SpawnActor<AGrabArm>(_GrabArmClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+
+		// Attach it to the mech
+		if (_GrabArm)
+		{
+			_GrabArm->AttachToComponent(_Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		}
+	}
+}
+
+void AProtoMech::TriggerGrabArm()
+{
+	if (_GrabArm)
+	{
+		_GrabArm->MoveArm();
+	}
 }
 
