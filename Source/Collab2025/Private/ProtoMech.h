@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
+#include "GrabArm.h"
 #include "ProtoMech.generated.h"
 
 class UBoxComponent;
@@ -38,8 +39,20 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> _MechSpline;
 
+	UPROPERTY(EditAnywhere, Category="Grab Arm")
+	TSubclassOf<AGrabArm> _GrabArmClass;
+
+	UPROPERTY()
+	TObjectPtr<AGrabArm> _GrabArm;
+
 	UFUNCTION()
 	void MoveMech(float influence);
+
+	UFUNCTION(BlueprintCallable, Category="Grab Arm")
+	void SpawnGrabArm();
+
+	UFUNCTION(BlueprintCallable, Category="Grab Arm")
+	void TriggerGrabArm();
 	
 public:
 	// Called every frame
