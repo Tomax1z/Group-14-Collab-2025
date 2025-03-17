@@ -81,7 +81,7 @@ void AGrabArm::MoveArm()
 
 void AGrabArm::UpdateArmPosition(float Alpha)
 {
-	FVector TargetLocation(1000.0f, 0, 0);
+	FVector TargetLocation(GetActorForwardVector() * 1000);
 	
 	// Calculate the new position
 	FVector StartLocation = _ProtoMechRef->_MechMesh->GetComponentLocation();
