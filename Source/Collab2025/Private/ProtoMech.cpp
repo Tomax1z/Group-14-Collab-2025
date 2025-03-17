@@ -75,10 +75,16 @@ void AProtoMech::SpawnGrabArm()
 
 		_GrabArm = GetWorld()->SpawnActor<AGrabArm>(_GrabArmClass, GetActorLocation(), GetActorRotation(), SpawnParams);
 
+		
 		// Attach it to the mech
 		if (_GrabArm)
 		{
-			_GrabArm->AttachToComponent(_Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			_GrabArm->AttachToComponent(_MechMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			UE_LOG(LogTemp, Warning, TEXT("Found Arm"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOT Found Arm"));
 		}
 	}
 }

@@ -3,6 +3,9 @@
 
 #include "GrabArm.h"
 
+#include "ProtoMech.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AGrabArm::AGrabArm()
@@ -21,7 +24,6 @@ AGrabArm::AGrabArm()
 	_ArmCollision->SetupAttachment(_ArmMesh);
 
 	// Initialize the target location
-	_TargetLocation = FVector(50.0f, 0.0f, 0.0f);
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +51,7 @@ void AGrabArm::BeginPlay()
 		// Add the key points from your timeline in the Blueprint
 		Curve->FloatCurve.AddKey(0.0f, 0.0f);
 		Curve->FloatCurve.AddKey(1.0f, 1.0f);
-		Curve->FloatCurve.AddKey(3.0f, -1.0f);
-		Curve->FloatCurve.AddKey(4.0f, 0.0f);
+		Curve->FloatCurve.AddKey(2.0f, 0.0f);
 
 		_GrabbingCurve = Curve;
         
@@ -63,6 +64,9 @@ void AGrabArm::BeginPlay()
 		_ArmTimeline.AddInterpFloat(_GrabbingCurve, timelineCallback);
 		_ArmTimeline.SetTimelineFinishedFunc(timelineFinishedCallback);
 	}
+
+	AActor* MechRef = UGameplayStatics::GetActorOfClass(GetWorld(), AProtoMech::StaticClass());
+	_ProtoMechRef = Cast<AProtoMech>(MechRef);
 	
 }
 
@@ -77,9 +81,11 @@ void AGrabArm::MoveArm()
 
 void AGrabArm::UpdateArmPosition(float Alpha)
 {
+	FVector TargetLocation(1000.0f, 0, 0);
+	
 	// Calculate the new position
-	FVector StartLocation = GetActorLocation();
-	FVector EndLocation = StartLocation + _TargetLocation;
+	FVector StartLocation = _ProtoMechRef->_MechMesh->GetComponentLocation();
+	FVector EndLocation = StartLocation + TargetLocation;
 	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
     
 	// Set the new position

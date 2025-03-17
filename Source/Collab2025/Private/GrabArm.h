@@ -8,6 +8,9 @@
 #include "Components/TimelineComponent.h"
 #include "GrabArm.generated.h"
 
+
+class AProtoMech;
+
 UCLASS()
 class COLLAB2025_API AGrabArm : public AActor
 {
@@ -31,9 +34,6 @@ protected:
 	TObjectPtr<USphereComponent> _ArmCollision;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
-	FVector _TargetLocation;
-
-	UPROPERTY(EditAnywhere, Category="Movement")
 	UCurveFloat* _GrabbingCurve;
 
 	// Timeline for arm movement
@@ -44,6 +44,8 @@ protected:
 
 	UFUNCTION()
 	void OnArmTimelineFinished();
+
+	AProtoMech* _ProtoMechRef;
 
 public:
 	// Called every frame
