@@ -55,4 +55,18 @@ public:
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Add to ProtoMech.h
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	float _EnergyLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	float _OxygenLevel;
+
+	UFUNCTION(BlueprintCallable, Category = "Resources")
+	void AddEnergy(float Amount);
+
+	UFUNCTION(BlueprintCallable, Category = "Resources")
+	void AddOxygen(float Amount);
+
 };
