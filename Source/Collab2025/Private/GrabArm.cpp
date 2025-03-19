@@ -3,7 +3,6 @@
 
 #include "GrabArm.h"
 
-#include "IGrabbable.h"
 #include "ProtoMech.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -23,16 +22,14 @@ AGrabArm::AGrabArm()
 
 	_ArmCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Arm Collision"));
 	_ArmCollision->SetupAttachment(_ArmMesh);
+
+	// Initialize the target location
 }
 
 // Called when the game starts or when spawned
 void AGrabArm::BeginPlay()
 {
 	Super::BeginPlay();
-
-	_ArmCollision->OnComponentBeginOverlap.AddDynamic(this, &AGrabArm::OnArmCollisionBeginOverlap);
-	_IsHoldingObject = false;
-	_GrabbedObject = nullptr;
 
 	// Setup timeline if we have a curve
 	if (_GrabbingCurve)
@@ -97,11 +94,7 @@ void AGrabArm::UpdateArmPosition(float Alpha)
 
 void AGrabArm::OnArmTimelineFinished()
 {
-	// If the arm has returned to the mech and is holding an object, release it
-	if (_IsHoldingObject && _ArmTimeline.GetTimelineLength() - _ArmTimeline.GetPlaybackPosition() < 0.1f)
-	{
-		ReleaseObject();
-	}
+	
 }
 
 // Called every frame
@@ -111,86 +104,5 @@ void AGrabArm::Tick(float DeltaTime)
 
 	// Update the timeline
 	_ArmTimeline.TickTimeline(DeltaTime);
-}
-
-void AGrabArm::OnArmCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (!_IsHoldingObject && OtherActor)
-    {
-    	if (OtherActor->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
-    	{
-    		// Use Execute_ method to call the interface function
-    		bool CanGrab = IIGrabbable::Execute_CanBeGrabbed(OtherActor);
-    
-    		if (CanGrab)
-    		{
-    			GrabObject(OtherActor);
-    			_ArmTimeline.Reverse();
-    		}
-    	}
-
-    	/*
-        // Try to cast to the IGrabbable interface
-        IIGrabbable* GrabbableObject = Cast<IIGrabbable>(OtherActor);
-        if (GrabbableObject && GrabbableObject->CanBeGrabbed())
-        {
-            GrabObject(OtherActor);
-            
-            // Start retracting arm to bring object back
-            _ArmTimeline.Reverse();
-        }
-        */
-    }
-}
-
-void AGrabArm::GrabObject(AActor* ObjectToGrab)
-{
-	if (ObjectToGrab)
-	{
-		// Store reference to grabbed object
-		_GrabbedObject = ObjectToGrab;
-		_IsHoldingObject = true;
-        
-		// Notify the object it's been grabbed - FIXED VERSION
-		if (ObjectToGrab->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
-		{
-			IIGrabbable::Execute_OnGrabbed(ObjectToGrab, this);
-		}
-        
-		// Attach object to arm
-		FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, false);
-		ObjectToGrab->AttachToComponent(_ArmMesh, AttachRules);
-        
-		UE_LOG(LogTemp, Warning, TEXT("Object grabbed: %s"), *ObjectToGrab->GetName());
-	}
-}
-
-
-void AGrabArm::ReleaseObject()
-{
-	if (_GrabbedObject)
-	{
-		// Notify the object it's being released (FIXED VERSION)
-		if (_GrabbedObject->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
-		{
-			// Use Execute_ method instead of direct call
-			IIGrabbable::Execute_OnReleased(_GrabbedObject, this);
-            
-			// Be careful: you might also need to fix this line if GetConsumableType
-			// is a BlueprintImplementableEvent or BlueprintNativeEvent
-			FString ConsumableType = IIGrabbable::Execute_GetConsumableType(_GrabbedObject);
-			UE_LOG(LogTemp, Warning, TEXT("Consuming %s"), *ConsumableType);
-            
-			// Add implementation to handle consumption based on type
-			// You can inform the mech here about the consumed resource
-		}
-        
-		// Detach object
-		_GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-        
-		// Reset grabbed object tracking
-		_GrabbedObject = nullptr;
-		_IsHoldingObject = false;
-	}
 }
 

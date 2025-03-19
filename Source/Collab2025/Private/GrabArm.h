@@ -47,21 +47,6 @@ protected:
 
 	AProtoMech* _ProtoMechRef;
 
-private:
-	UPROPERTY()
-	TObjectPtr<AActor> _GrabbedObject;
-    
-	bool _IsHoldingObject;
-    
-	UFUNCTION()
-	void OnArmCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-    
-	UFUNCTION()
-	void GrabObject(AActor* ObjectToGrab);
-    
-	UFUNCTION()
-	void ReleaseObject();
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

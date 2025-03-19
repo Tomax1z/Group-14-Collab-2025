@@ -97,15 +97,3 @@ void AProtoMech::TriggerGrabArm()
 	}
 }
 
-// Implement in ProtoMech.cpp
-void AProtoMech::AddEnergy(float Amount)
-{
-	_EnergyLevel += Amount;
-	UE_LOG(LogTemp, Warning, TEXT("Energy added: %f. New level: %f"), Amount, _EnergyLevel);
-}
-
-void AProtoMech::AddOxygen(float Amount)
-{
-	_OxygenLevel += Amount;
-	UE_LOG(LogTemp, Warning, TEXT("Oxygen added: %f. New level: %f"), Amount, _OxygenLevel);
-}
