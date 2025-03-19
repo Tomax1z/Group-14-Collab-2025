@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/TimelineComponent.h"
+#include "IGrabbable.h"
 #include "GrabArm.generated.h"
 
 
@@ -53,4 +54,22 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Movement")
 	void MoveArm();
+	
+	// Try to grab an object
+	UFUNCTION(BlueprintCallable, Category="Grabbing")
+	bool TryGrab();
+
+	// Release the currently grabbed object
+	UFUNCTION(BlueprintCallable, Category="Grabbing")
+	void ReleaseGrabbedObject();
+
+private:
+	UPROPERTY()
+	AActor* _GrabbedObject;
+    
+	bool _bIsGrabbing = false;
+    
+	// Collision detection function
+	UFUNCTION()
+	void OnArmOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
