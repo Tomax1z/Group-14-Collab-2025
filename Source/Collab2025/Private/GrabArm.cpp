@@ -23,7 +23,9 @@ AGrabArm::AGrabArm()
 	_ArmCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Arm Collision"));
 	_ArmCollision->SetupAttachment(_ArmMesh);
 
-	// Initialize the target location
+	_ArmCollision->SetCollisionProfileName(TEXT("OverlapAll"));
+	_ArmCollision->SetGenerateOverlapEvents(true);
+	_ArmCollision->OnComponentBeginOverlap.AddDynamic(this, &AGrabArm::OnArmOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +74,12 @@ void AGrabArm::BeginPlay()
 
 void AGrabArm::MoveArm()
 {
+	// Clear any previous grab target
+	if (!_bIsGrabbing)
+	{
+		_GrabbedObject = nullptr;
+	}
+    
 	// Start the timeline
 	if (_GrabbingCurve)
 	{
@@ -90,11 +98,21 @@ void AGrabArm::UpdateArmPosition(float Alpha)
     
 	// Set the new position
 	SetActorLocation(NewLocation, true, nullptr, ETeleportType::None);
+
+	// Try to grab when the arm is at full extension (Alpha around 1.0)
+	if (!_bIsGrabbing && _GrabbedObject && Alpha >= 0.95f && Alpha <= 1.0f)
+	{
+		TryGrab();
+	}
 }
 
 void AGrabArm::OnArmTimelineFinished()
 {
-	
+	// If we didn't grab anything during extension, clear any potential grab target
+	if (!_bIsGrabbing)
+	{
+		_GrabbedObject = nullptr;
+	}
 }
 
 // Called every frame
@@ -106,3 +124,95 @@ void AGrabArm::Tick(float DeltaTime)
 	_ArmTimeline.TickTimeline(DeltaTime);
 }
 
+void AGrabArm::OnArmOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// If we're already grabbing something or the overlap is invalid, ignore this overlap
+	if (_bIsGrabbing || !OtherActor)
+	{
+		UE_LOG(LogTemp, Display, TEXT("GrabFull"));
+		return;
+	}
+
+	// Check if the actor implements the IGrabbable interface
+	if (OtherActor->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
+	{
+		// Check if it can be grabbed (optional)
+		//bool bCanBeGrabbed = IIGrabbable::Execute_CanBeGrabbed(OtherActor);
+
+		//UE_LOG(LogTemp, Log, TEXT("%s CanBeGrabbed %s"), *OtherActor->GetName(), bCanBeGrabbed ? TEXT("TRUE") : TEXT("FALSE"));
+		_GrabbedObject = OtherActor;
+		UE_LOG(LogTemp, Display, TEXT("GrabbedInterface"));
+
+		/*
+		if (bCanBeGrabbed)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Setting %s as potential grab target"), *OtherActor->GetName());
+			
+			// We found a grabbable object that's overlapping
+			_GrabbedObject = OtherActor;
+			
+		}
+		*/
+	}
+}
+
+bool AGrabArm::TryGrab()
+{
+	if (_GrabbedObject)
+	{
+		// We have a valid object to grab
+		_bIsGrabbing = true;
+
+		// Notify the object it's been grabbed
+		IIGrabbable::Execute_OnGrabbed(_GrabbedObject, this);
+
+		// Attach the object to the arm
+		UStaticMeshComponent* GrabbableMeshComponent = Cast<UStaticMeshComponent>(_GrabbedObject->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+		if (GrabbableMeshComponent)
+		{
+			UE_LOG(LogTemp, Display, TEXT("InRoot"));
+			
+			// If it has physics, we need to handle it differently
+			if (GrabbableMeshComponent->IsSimulatingPhysics())
+			{
+				// Disable physics and attach
+				GrabbableMeshComponent->SetSimulatePhysics(false);
+			}
+            
+			// Attach to arm
+			FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
+			_GrabbedObject->AttachToComponent(_ArmMesh, AttachRules);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("Not in root"));
+		}
+
+		return true;
+	}
+	
+
+	return false;
+}
+
+void AGrabArm::ReleaseGrabbedObject()
+{
+	if (_GrabbedObject)
+	{
+		// Notify the object it's been released
+		IIGrabbable::Execute_OnReleasedGrab(_GrabbedObject, this);
+
+		// Detach from the arm
+		_GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        
+		// Re-enable physics if needed
+		UPrimitiveComponent* GrabbableRootComponent = Cast<UPrimitiveComponent>(_GrabbedObject->GetRootComponent());
+		if (GrabbableRootComponent)
+		{
+			GrabbableRootComponent->SetSimulatePhysics(true);
+		}
+        
+		_GrabbedObject = nullptr;
+		_bIsGrabbing = false;
+	}
+}
