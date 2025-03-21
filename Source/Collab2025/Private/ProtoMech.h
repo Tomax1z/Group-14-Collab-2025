@@ -31,11 +31,11 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<USceneComponent> _Root;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> _MechMesh;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBoxComponent> _MechCollision;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USplineComponent> _MechSpline;
 
 	UPROPERTY(EditAnywhere, Category="Grab Arm")
