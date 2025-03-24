@@ -113,6 +113,11 @@ void AGrabArm::OnArmTimelineFinished()
 	{
 		_GrabbedObject = nullptr;
 	}
+
+	if (_bIsGrabbing)
+	{
+		ReleaseGrabbedObject();
+	}
 }
 
 // Called every frame
