@@ -4,7 +4,6 @@
 #include "GrabArm.h"
 
 #include "IConsumable.h"
-#include "PickupBase.h"
 #include "ProtoMech.h"
 #include "Kismet/GameplayStatics.h"
 
