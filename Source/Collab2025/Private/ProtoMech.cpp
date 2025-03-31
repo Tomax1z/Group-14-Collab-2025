@@ -67,7 +67,8 @@ void AProtoMech::Tick(float DeltaTime)
 
 void AProtoMech::SpawnGrabArm()
 {
-	UE_LOG(LogTemp, Display, TEXT("Spawning Grab Arm"));
+	UE_LOG(LogTemp, Display, TEXT("Spawning Grab Arm"));-
+		+
 	if (_GrabArmClass)
 	{
 		// Spawn the grab arm
