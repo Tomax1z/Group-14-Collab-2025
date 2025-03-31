@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "IConsumable.h"
+#include "IGrabbable.h"
 #include "GameFramework/Actor.h"
 #include "EnergyCell.generated.h"
 
 UCLASS()
-class COLLAB2025_API AEnergyCell : public AActor
+class COLLAB2025_API AEnergyCell : public AActor, public IIConsumable, public IIGrabbable
 {
 	GENERATED_BODY()
 
@@ -22,4 +24,5 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual FName GetConsumableType_Implementation() override;
 };

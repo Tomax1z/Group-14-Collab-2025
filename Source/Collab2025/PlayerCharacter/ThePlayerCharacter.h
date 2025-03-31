@@ -38,6 +38,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCharacterMovementComponent> _CharacterMovement;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _NumOfOxygenTanks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _NumOfPowerCells;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

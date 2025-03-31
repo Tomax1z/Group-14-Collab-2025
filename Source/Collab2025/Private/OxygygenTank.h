@@ -1,0 +1,32 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "IConsumable.h"
+#include "IGrabbable.h"
+#include "GameFramework/Actor.h"
+#include "OxygygenTank.generated.h"
+
+UCLASS()
+class COLLAB2025_API AOxygygenTank : public AActor, public IIGrabbable, public IIConsumable
+{
+	GENERATED_BODY()
+public:
+	// Sets default values for this actor's properties
+	AOxygygenTank();
+
+	UPROPERTY()
+	TObjectPtr<USceneComponent> _Root;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> _Mesh;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	virtual FName GetConsumableType_Implementation() override;
+};
