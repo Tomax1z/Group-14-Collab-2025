@@ -3,6 +3,8 @@
 
 #include "GrabArm.h"
 
+#include "IConsumable.h"
+#include "PickupBase.h"
 #include "ProtoMech.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -206,7 +208,7 @@ void AGrabArm::ReleaseGrabbedObject()
 	{
 		// Notify the object it's been released
 		IIGrabbable::Execute_OnReleasedGrab(_GrabbedObject, this);
-
+		
 		// Detach from the arm
 		_GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
         
@@ -216,7 +218,13 @@ void AGrabArm::ReleaseGrabbedObject()
 		{
 			GrabbableRootComponent->SetSimulatePhysics(true);
 		}
-        
+		
+		if(_GrabbedObject->GetClass()->ImplementsInterface(UIConsumable::StaticClass()))
+		{
+			FName ConsumableType = IIConsumable::Execute_GetConsumableType(_GrabbedObject);
+			UE_LOG(LogTemp, Warning, TEXT("Consumable Type: %s"), *ConsumableType.ToString());
+		}
+		
 		_GrabbedObject = nullptr;
 		_bIsGrabbing = false;
 	}
