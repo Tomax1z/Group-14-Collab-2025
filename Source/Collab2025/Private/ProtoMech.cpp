@@ -13,13 +13,13 @@ AProtoMech::AProtoMech()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	//_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	_MechMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mech Mesh"));
+	//_MechMesh -> SetupAttachment(_MechSpline);
 	
 	_MechSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Mech Spline"));
-	_MechSpline -> SetupAttachment(_Root);
+	//_MechSpline -> SetupAttachment(_MechMesh);
 	
-	_MechMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mech Mesh"));
-	_MechMesh -> SetupAttachment(_MechSpline);
 	
 	_MechCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	_MechCollision->SetupAttachment(_MechMesh);
