@@ -10,6 +10,7 @@
 #include "GrabArm.generated.h"
 
 
+class AThePlayerCharacter;
 class AProtoMech;
 
 UCLASS()
@@ -64,6 +65,7 @@ public:
 	void ReleaseGrabbedObject();
 
 private:
+	AThePlayerCharacter* PlayerCharacter;
 	UPROPERTY()
 	AActor* _GrabbedObject;
     

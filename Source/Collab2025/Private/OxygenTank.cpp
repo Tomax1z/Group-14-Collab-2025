@@ -1,11 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EnergyCell.h"
+#include "OxygenTank.h"
 
 
 // Sets default values
-AEnergyCell::AEnergyCell()
+AOxygenTank::AOxygenTank()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,20 +21,19 @@ AEnergyCell::AEnergyCell()
 }
 
 // Called when the game starts or when spawned
-void AEnergyCell::BeginPlay()
+void AOxygenTank::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AEnergyCell::Tick(float DeltaTime)
+void AOxygenTank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-FName AEnergyCell::GetConsumableType_Implementation()
+FName AOxygenTank::GetConsumableType_Implementation()
 {
-	return "EnergyCell";
+	return "OxygenTank";
 }
-

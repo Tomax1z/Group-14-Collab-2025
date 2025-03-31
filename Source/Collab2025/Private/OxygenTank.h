@@ -6,20 +6,22 @@
 #include "IConsumable.h"
 #include "IGrabbable.h"
 #include "GameFramework/Actor.h"
-#include "OxygygenTank.generated.h"
+#include "OxygenTank.generated.h"
 
 UCLASS()
-class COLLAB2025_API AOxygygenTank : public AActor, public IIGrabbable, public IIConsumable
+class COLLAB2025_API AOxygenTank : public AActor, public IIGrabbable, public IIConsumable
 {
 	GENERATED_BODY()
 public:
 	// Sets default values for this actor's properties
-	AOxygygenTank();
+	AOxygenTank();
 
 	UPROPERTY()
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> _Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> _Collision;
 
 protected:
 	// Called when the game starts or when spawned

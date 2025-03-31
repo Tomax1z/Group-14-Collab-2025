@@ -67,8 +67,8 @@ void AProtoMech::Tick(float DeltaTime)
 
 void AProtoMech::SpawnGrabArm()
 {
-	UE_LOG(LogTemp, Display, TEXT("Spawning Grab Arm"));-
-		+
+	UE_LOG(LogTemp, Display, TEXT("Spawning Grab Arm"));
+		
 	if (_GrabArmClass)
 	{
 		// Spawn the grab arm
@@ -76,7 +76,6 @@ void AProtoMech::SpawnGrabArm()
 		SpawnParams.Owner = this;
 
 		_GrabArm = GetWorld()->SpawnActor<AGrabArm>(_GrabArmClass, GetActorLocation(), GetActorRotation(), SpawnParams);
-
 		
 		// Attach it to the mech
 		if (_GrabArm)

@@ -17,6 +17,13 @@ public:
 	// Sets default values for this actor's properties
 	AEnergyCell();
 
+	UPROPERTY()
+	TObjectPtr<USceneComponent> _Root;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> _Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> _Collision;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

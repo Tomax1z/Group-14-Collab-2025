@@ -5,6 +5,7 @@
 
 #include "IConsumable.h"
 #include "ProtoMech.h"
+#include "Collab2025/PlayerCharacter/ThePlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -67,6 +68,7 @@ void AGrabArm::BeginPlay()
 		_ArmTimeline.AddInterpFloat(_GrabbingCurve, timelineCallback);
 		_ArmTimeline.SetTimelineFinishedFunc(timelineFinishedCallback);
 	}
+	PlayerCharacter = Cast<AThePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	AActor* MechRef = UGameplayStatics::GetActorOfClass(GetWorld(), AProtoMech::StaticClass());
 	_ProtoMechRef = Cast<AProtoMech>(MechRef);
@@ -100,8 +102,8 @@ void AGrabArm::UpdateArmPosition(float Alpha)
 	// Set the new position
 	SetActorLocation(NewLocation, true, nullptr, ETeleportType::None);
 
-	// Try to grab when the arm is at full extension (Alpha around 1.0)
-	if (!_bIsGrabbing && _GrabbedObject && Alpha >= 0.95f && Alpha <= 1.0f)
+	// Try to grab
+	if (!_bIsGrabbing && _GrabbedObject)
 	{
 		TryGrab();
 	}
@@ -126,6 +128,8 @@ void AGrabArm::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
+	
 	// Update the timeline
 	_ArmTimeline.TickTimeline(DeltaTime);
 }
@@ -222,6 +226,19 @@ void AGrabArm::ReleaseGrabbedObject()
 		{
 			FName ConsumableType = IIConsumable::Execute_GetConsumableType(_GrabbedObject);
 			UE_LOG(LogTemp, Warning, TEXT("Consumable Type: %s"), *ConsumableType.ToString());
+
+			if (PlayerCharacter && ConsumableType == "OxygenTank")
+			{
+				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
+				_GrabbedObject->Destroy();
+				UE_LOG(LogTemp, Warning, TEXT("Oxygen Tanks Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+			}
+			if (PlayerCharacter && ConsumableType == "EnergyCell")
+			{
+				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
+				_GrabbedObject->Destroy();
+				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+			}
 		}
 		
 		_GrabbedObject = nullptr;
