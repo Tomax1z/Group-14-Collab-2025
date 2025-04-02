@@ -19,10 +19,6 @@ AProtoMech::AProtoMech()
 	
 	_MechSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Mech Spline"));
 	//_MechSpline -> SetupAttachment(_MechMesh);
-	
-	
-	_MechCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	_MechCollision->SetupAttachment(_MechMesh);
 }
 
 // Called when the game starts or when spawned

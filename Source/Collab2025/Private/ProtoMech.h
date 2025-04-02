@@ -33,8 +33,6 @@ public:
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> _MechMesh;
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UBoxComponent> _MechCollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USplineComponent> _MechSpline;
 

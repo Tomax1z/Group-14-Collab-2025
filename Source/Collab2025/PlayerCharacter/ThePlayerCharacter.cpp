@@ -60,7 +60,6 @@ void AThePlayerCharacter::IALook_Implementation(const FInputActionInstance& Inst
 void AThePlayerCharacter::IAInteract_Implementation(const FInputActionInstance& Instance)
 {
 	IIAInterface::IAInteract_Implementation(Instance);
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, TEXT("Interact!"));
 }
 
 void AThePlayerCharacter::IASprint_Implementation(const FInputActionInstance& Instance)
