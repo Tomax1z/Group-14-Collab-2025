@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UStaticMeshComponent> _ArmMesh;
 
-	UPROPERTY(EditAnywhere, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<USphereComponent> _ArmCollision;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
@@ -47,6 +47,7 @@ protected:
 	UFUNCTION()
 	void OnArmTimelineFinished();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ref")
 	AProtoMech* _ProtoMechRef;
 
 public:
