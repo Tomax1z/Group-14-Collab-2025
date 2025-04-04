@@ -19,8 +19,11 @@ AGrabArm::AGrabArm()
 	_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = _Root;
 
+	_ShoulderMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shoulder Mesh"));
+	_ShoulderMesh->SetupAttachment(_Root);
+	
 	_ArmMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Arm Mesh"));
-	_ArmMesh->SetupAttachment(_Root);
+	_ArmMesh->SetupAttachment(_ShoulderMesh);
 
 	_ArmCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Arm Collision"));
 	_ArmCollision->SetupAttachment(_ArmMesh);
@@ -92,10 +95,9 @@ void AGrabArm::MoveArm()
 
 void AGrabArm::UpdateArmPosition(float Alpha)
 {
-	FVector TargetLocation(GetActorForwardVector() * 1000);
+	FVector TargetLocation((-GetActorForwardVector() * 1000) + (_ProtoMechRef->GetActorForwardVector() * _ProtoMechRef->GetVelocity()));
 	
 	// Calculate the new position
-	FVector StartLocation = _ProtoMechRef->_MechMesh->GetComponentLocation();
 	FVector EndLocation = StartLocation + TargetLocation;
 	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
     

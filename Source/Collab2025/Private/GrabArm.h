@@ -29,7 +29,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USceneComponent> _Root;
 
-	UPROPERTY(EditAnywhere, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
+	TObjectPtr<UStaticMeshComponent> _ShoulderMesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<UStaticMeshComponent> _ArmMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
@@ -64,6 +67,9 @@ public:
 	// Release the currently grabbed object
 	UFUNCTION(BlueprintCallable, Category="Grabbing")
 	void ReleaseGrabbedObject();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector StartLocation;
 
 private:
 	AThePlayerCharacter* PlayerCharacter;
