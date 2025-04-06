@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/TimelineComponent.h"
 #include "IGrabbable.h"
@@ -34,9 +34,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<UStaticMeshComponent> _ArmMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
-	TObjectPtr<USphereComponent> _ArmCollision;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
 	UCurveFloat* _GrabbingCurve;

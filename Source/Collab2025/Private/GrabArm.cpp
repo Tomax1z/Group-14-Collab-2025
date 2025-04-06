@@ -25,12 +25,12 @@ AGrabArm::AGrabArm()
 	_ArmMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Arm Mesh"));
 	_ArmMesh->SetupAttachment(_ShoulderMesh);
 
-	_ArmCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Arm Collision"));
+	/*_ArmCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Arm Collision"));
 	_ArmCollision->SetupAttachment(_ArmMesh);
 
 	_ArmCollision->SetCollisionProfileName(TEXT("OverlapAll"));
 	_ArmCollision->SetGenerateOverlapEvents(true);
-	_ArmCollision->OnComponentBeginOverlap.AddDynamic(this, &AGrabArm::OnArmOverlapBegin);
+	_ArmCollision->OnComponentBeginOverlap.AddDynamic(this, &AGrabArm::OnArmOverlapBegin);*/
 }
 
 // Called when the game starts or when spawned
