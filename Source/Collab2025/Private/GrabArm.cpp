@@ -237,9 +237,9 @@ void AGrabArm::ReleaseGrabbedObject()
 			}
 			if (PlayerCharacter && ConsumableType == "EnergyCell")
 			{
-				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
+				PlayerCharacter->_NumOfPowerCells += 1.0f;
 				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfPowerCells);
 			}
 		}
 		
