@@ -27,12 +27,6 @@ void AOxygenTank::BeginPlay()
 	
 }
 
-// Called every frame
-void AOxygenTank::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 FName AOxygenTank::GetConsumableType_Implementation()
 {
 	return "OxygenTank";

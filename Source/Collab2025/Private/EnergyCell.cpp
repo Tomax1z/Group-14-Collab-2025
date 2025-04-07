@@ -27,12 +27,6 @@ void AEnergyCell::BeginPlay()
 	
 }
 
-// Called every frame
-void AEnergyCell::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 FName AEnergyCell::GetConsumableType_Implementation()
 {
 	return "EnergyCell";

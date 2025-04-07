@@ -22,13 +22,3 @@ void UArm::BeginPlay()
 	// ...
 	
 }
-
-
-// Called every frame
-void UArm::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
