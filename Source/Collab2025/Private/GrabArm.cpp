@@ -138,34 +138,6 @@ void AGrabArm::Tick(float DeltaTime)
 
 void AGrabArm::OnArmOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// If we're already grabbing something or the overlap is invalid, ignore this overlap
-	if (_bIsGrabbing || !OtherActor)
-	{
-		UE_LOG(LogTemp, Display, TEXT("GrabFull"));
-		return;
-	}
-
-	// Check if the actor implements the IGrabbable interface
-	if (OtherActor->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
-	{
-		// Check if it can be grabbed (optional)
-		//bool bCanBeGrabbed = IIGrabbable::Execute_CanBeGrabbed(OtherActor);
-
-		//UE_LOG(LogTemp, Log, TEXT("%s CanBeGrabbed %s"), *OtherActor->GetName(), bCanBeGrabbed ? TEXT("TRUE") : TEXT("FALSE"));
-		_GrabbedObject = OtherActor;
-		UE_LOG(LogTemp, Display, TEXT("GrabbedInterface"));
-
-		/*
-		if (bCanBeGrabbed)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Setting %s as potential grab target"), *OtherActor->GetName());
-			
-			// We found a grabbable object that's overlapping
-			_GrabbedObject = OtherActor;
-			
-		}
-		*/
-	}
 }
 
 bool AGrabArm::TryGrab()
@@ -237,13 +209,32 @@ void AGrabArm::ReleaseGrabbedObject()
 			}
 			if (PlayerCharacter && ConsumableType == "EnergyCell")
 			{
-				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
+				PlayerCharacter->_NumOfPowerCells += 1.0f;
 				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfPowerCells);
 			}
 		}
 		
 		_GrabbedObject = nullptr;
 		_bIsGrabbing = false;
+	}
+}
+
+void AGrabArm::HandleArmOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// If we're already grabbing something or the overlap is invalid, ignore this overlap
+	if (_bIsGrabbing || !OtherActor)
+	{
+		UE_LOG(LogTemp, Display, TEXT("GrabFull"));
+		return;
+	}
+
+	// Check if the actor implements the IGrabbable interface
+	if (OtherActor->GetClass()->ImplementsInterface(UIGrabbable::StaticClass()))
+	{
+		// Set the grabbed object
+		_GrabbedObject = OtherActor;
+		UE_LOG(LogTemp, Display, TEXT("GrabbedInterface"));
 	}
 }

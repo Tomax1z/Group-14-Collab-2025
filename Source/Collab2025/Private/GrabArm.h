@@ -68,6 +68,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector StartLocation;
 
+	UFUNCTION(BlueprintCallable, Category = "Grab System")
+	void HandleArmOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+						  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
+						  bool bFromSweep, const FHitResult& SweepResult);
+
+
 private:
 	AThePlayerCharacter* PlayerCharacter;
 	UPROPERTY()
