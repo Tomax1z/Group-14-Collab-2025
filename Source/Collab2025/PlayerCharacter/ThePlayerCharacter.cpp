@@ -13,7 +13,6 @@ AThePlayerCharacter::AThePlayerCharacter()
 {
 	_Collision = GetCapsuleComponent();
 	_CharacterMovement = GetCharacterMovement();
-
 	_Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	_Camera->SetupAttachment(_Collision);
 	_Camera->SetRelativeLocation(FVector(-10.0f, 0.0f, 60.0f));
