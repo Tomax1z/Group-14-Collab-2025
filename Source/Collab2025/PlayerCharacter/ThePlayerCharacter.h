@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Collab2025/PlayerController/Interfaces/IAInterface.h"
+#include "ISpeedRatioReceivable.h"
 #include "ThePlayerCharacter.generated.h"
 
 class UCapsuleComponent;
@@ -12,7 +13,7 @@ class UCameraComponent;
 class UCharacterMovementComponent;
 
 UCLASS()
-class COLLAB2025_API AThePlayerCharacter : public ACharacter, public IIAInterface
+class COLLAB2025_API AThePlayerCharacter : public ACharacter, public IIAInterface, public IISpeedRatioReceivable
 {
 	GENERATED_BODY()
 
@@ -43,6 +44,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _NumOfPowerCells;
 
+public:
+	void SetIsSprinting(bool bSprinting);
+
+	virtual void SetSpeedRatio_Implementation(float SprintSpeed, float BaseSpeed) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,6 +59,12 @@ protected:
 	float _WalkSpeed = 500.0f;
 	UPROPERTY(EditAnywhere)
 	float _CrouchSpeed = 300.0f;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Sprint State")
+	bool bIsSprinting = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float _SprintBaseSpeedRatio;
 
 public:
 
