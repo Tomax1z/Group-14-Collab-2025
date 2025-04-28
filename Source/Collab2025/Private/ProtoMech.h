@@ -24,6 +24,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
 	float _MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	float _MoveSpeedBase;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	float _MoveSpeedSprint;
 	UPROPERTY(EditAnywhere, Category="Movement Paramaters")
 	bool _Loop;
 	UPROPERTY()
@@ -44,6 +48,12 @@ public:
 
 	UFUNCTION()
 	void MoveMech(float influence);
+
+	UFUNCTION()
+	void SetSpeedToSprint();
+
+	UFUNCTION()
+	void SetSpeedToBase();
 
 	UFUNCTION(BlueprintCallable, Category="Grab Arm")
 	void SpawnGrabArm();

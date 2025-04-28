@@ -52,6 +52,16 @@ void AProtoMech::MoveMech(float influence)
 	}
 }
 
+void AProtoMech::SetSpeedToSprint()
+{
+	_MoveSpeed = _MoveSpeedSprint;
+}
+
+void AProtoMech::SetSpeedToBase()
+{
+	_MoveSpeed = _MoveSpeedSprint;
+}
+
 // Called every frame
 void AProtoMech::Tick(float DeltaTime)
 {
