@@ -86,11 +86,20 @@ void AThePlayerCharacter::IAJump_Implementation(const FInputActionInstance& Inst
 	Jump();
 }
 
+void AThePlayerCharacter::SetIsSprinting(bool bSprinting)
+{
+	bIsSprinting = bSprinting;
+}
+
+void AThePlayerCharacter::SetSpeedRatio_Implementation(float SprintSpeed, float BaseSpeed)
+{
+	_SprintBaseSpeedRatio = SprintSpeed / BaseSpeed;
+}
+
 // Called when the game starts or when spawned
 void AThePlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called to bind functionality to input

@@ -2,9 +2,10 @@
 
 
 #include "ProtoMech.h"
-
 #include "Components/BoxComponent.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
+#include "ISpeedRatioReceivable.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -25,8 +26,14 @@ AProtoMech::AProtoMech()
 void AProtoMech::BeginPlay()
 {
 	Super::BeginPlay();
-
+	_MoveSpeed = _MoveSpeedBase;
 	SpawnGrabArm();
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	if (PlayerPawn && PlayerPawn->GetClass()->ImplementsInterface(UISpeedRatioReceivable::StaticClass()))
+	{
+		IISpeedRatioReceivable::Execute_SetSpeedRatio(PlayerPawn, _MoveSpeedSprint, _MoveSpeedBase);
+		UE_LOG(LogTemp, Log, TEXT("ProtoMech -> Player.SetSpeedRatio(sprint=%f, base=%f)"), _MoveSpeedSprint, _MoveSpeedBase);
+	}
 }
 
 void AProtoMech::MoveMech(float influence)
@@ -94,3 +101,16 @@ void AProtoMech::TriggerGrabArm()
 	}
 }
 
+void AProtoMech::SetSprintStatus_Implementation(bool bIsSprinting)
+{
+	if (bIsSprinting)
+	{
+		_MoveSpeed = _MoveSpeedSprint;
+		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to SPRINT: %f"), _MoveSpeed);
+	}
+	else
+	{
+		_MoveSpeed = _MoveSpeedBase;
+		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to BASE: &f"), _MoveSpeed);
+	}
+}

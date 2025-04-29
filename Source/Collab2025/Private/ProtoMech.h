@@ -6,12 +6,13 @@
 #include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GrabArm.h"
+#include "ISpeedControllable.h"
 #include "ProtoMech.generated.h"
 
 class UBoxComponent;
 
 UCLASS()
-class COLLAB2025_API AProtoMech : public AActor
+class COLLAB2025_API AProtoMech : public AActor, public IISpeedControllable
 {
 	GENERATED_BODY()
 
@@ -24,6 +25,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
 	float _MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	float _MoveSpeedBase = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	float _MoveSpeedSprint = 300.0f;
 	UPROPERTY(EditAnywhere, Category="Movement Paramaters")
 	bool _Loop;
 	UPROPERTY()
@@ -50,6 +55,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Grab Arm")
 	void TriggerGrabArm();
+
+	virtual void SetSprintStatus_Implementation(bool bIsSprinting) override;
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
