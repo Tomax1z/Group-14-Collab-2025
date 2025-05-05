@@ -34,8 +34,5 @@ FName AEnergyCell::GetConsumableType_Implementation()
 
 void AEnergyCell::OnPickUp_Implementation(AThePlayerCharacter* Picker)
 {
-	if (Picker)
-	{
-		Destroy();
-	}
+	
 }

@@ -20,6 +20,10 @@ AThePlayerCharacter::AThePlayerCharacter()
 
 	_CharacterMovement->MaxWalkSpeed = _WalkSpeed;
 	_CharacterMovement->MaxWalkSpeedCrouched = _CrouchSpeed;
+
+	_HoldArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("HoldArrow"));
+	_HoldArrow->SetupAttachment(_Camera);
+	_HoldArrow->bHiddenInGame = true;
 }
 
 void AThePlayerCharacter::IAMove_Implementation(const FInputActionInstance& Instance)
@@ -100,6 +104,44 @@ void AThePlayerCharacter::SetSpeedRatio_Implementation(float SprintSpeed, float 
 void AThePlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AThePlayerCharacter::PickupObject(AActor* ObjectToPickup)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PickedUp"));
+
+	if (!ObjectToPickup)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FAILED"));
+		return;
+	}
+
+	USceneComponent* RootComp = ObjectToPickup->GetRootComponent();
+	if (!RootComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PickupObject: no RootComponent"));
+		return;
+	}
+
+	if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(RootComp))
+	{
+		if (Prim->IsSimulatingPhysics())
+		{
+			Prim->SetSimulatePhysics(false);
+			Prim->SetEnableGravity(false);
+		}
+	}
+
+	RootComp->SetMobility(EComponentMobility::Movable);
+
+	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+	RootComp->AttachToComponent(_HoldArrow, Rules);
+
+	RootComp->SetRelativeLocation(FVector::ZeroVector);
+	RootComp->SetRelativeRotation(FRotator::ZeroRotator);
+
+	UE_LOG(LogTemp, Log, TEXT("Picked up %s"), *ObjectToPickup->GetName());
 }
 
 // Called to bind functionality to input

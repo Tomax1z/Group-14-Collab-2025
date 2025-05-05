@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Collab2025/PlayerController/Interfaces/IAInterface.h"
 #include "ISpeedRatioReceivable.h"
+#include "Components/ArrowComponent.h"
 #include "ThePlayerCharacter.generated.h"
 
 class UCapsuleComponent;
@@ -38,11 +39,14 @@ public:
 	TObjectPtr<UCameraComponent> _Camera;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCharacterMovementComponent> _CharacterMovement;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Pickup")
+	TObjectPtr<UArrowComponent> _HoldArrow;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _NumOfOxygenTanks;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _NumOfPowerCells;
+	
 
 public:
 	void SetIsSprinting(bool bSprinting);
@@ -67,6 +71,8 @@ protected:
 	float _SprintBaseSpeedRatio;
 
 public:
+	UFUNCTION(BlueprintCallable, Category="Pickup")
+	void PickupObject(AActor* ObjectToPickup);
 
 	UCameraComponent* GetCamera() const
 	{

@@ -128,8 +128,10 @@ void AProtoMech::SetSprintStatus_Implementation(bool bIsSprinting)
 
 AActor* AProtoMech::SpawnActorAtPoint(TSubclassOf<AActor> ActorClass)
 {
-	if (!ActorClass || !GetWorld() || !_SpawnPoint) 
+	if (!ActorClass || !GetWorld() || !_SpawnPoint)
+	{
 		return nullptr;
+	}
 
 	FTransform spawnTransform;
 	spawnTransform.SetLocation(_SpawnPoint->GetComponentLocation());
@@ -151,5 +153,6 @@ AActor* AProtoMech::SpawnActorAtPoint(TSubclassOf<AActor> ActorClass)
 		Prim->SetEnableGravity(true);
 		Prim->WakeAllRigidBodies();
 	}
+
 	return NewActor;
 }

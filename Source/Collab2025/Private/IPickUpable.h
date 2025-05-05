@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Collab2025/PlayerCharacter/ThePlayerCharacter.h"
 #include "UObject/Interface.h"
 #include "IPickUpable.generated.h"
 

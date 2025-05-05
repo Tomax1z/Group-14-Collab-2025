@@ -183,13 +183,14 @@ void AGrabArm::ReleaseGrabbedObject()
 {
 	if (_GrabbedObject)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Overlap"));
+
 		// Notify the object it's been released
 		IIGrabbable::Execute_OnReleasedGrab(_GrabbedObject, this);
 		
 		// Detach from the arm
 		_GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
         
-		// Re-enable physics if needed
 		UPrimitiveComponent* GrabbableRootComponent = Cast<UPrimitiveComponent>(_GrabbedObject->GetRootComponent());
 		if (GrabbableRootComponent)
 		{
@@ -198,16 +199,14 @@ void AGrabArm::ReleaseGrabbedObject()
 		
 		if(_GrabbedObject->GetClass()->ImplementsInterface(UIConsumable::StaticClass()))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Consumable"));
+
 			FName ConsumableType = IIConsumable::Execute_GetConsumableType(_GrabbedObject);
 			UE_LOG(LogTemp, Warning, TEXT("Consumable Type: %s"), *ConsumableType.ToString());
 			if (_ProtoMechRef)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("ProtoMech Ref"));
 				_ProtoMechRef->SpawnActorAtPoint(_GrabbedObject->GetClass());
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("ProtoMech Ref none"));
 			}
 			_GrabbedObject->Destroy();
 		}
