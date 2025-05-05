@@ -103,14 +103,21 @@ void AProtoMech::TriggerGrabArm()
 
 void AProtoMech::SetSprintStatus_Implementation(bool bIsSprinting)
 {
-	if (bIsSprinting)
+	if (!_PowerDown)
 	{
-		_MoveSpeed = _MoveSpeedSprint;
-		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to SPRINT: %f"), _MoveSpeed);
+		if (bIsSprinting)
+		{
+			_MoveSpeed = _MoveSpeedSprint;
+			UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to SPRINT: %f"), _MoveSpeed);
+		}
+		else
+		{
+			_MoveSpeed = _MoveSpeedBase;
+			UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to BASE: &f"), _MoveSpeed);
+		}
 	}
 	else
 	{
-		_MoveSpeed = _MoveSpeedBase;
-		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed set to BASE: &f"), _MoveSpeed);
+		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed not set"));
 	}
 }

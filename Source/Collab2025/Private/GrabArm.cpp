@@ -223,6 +223,7 @@ void AGrabArm::ReleaseGrabbedObject()
 void AGrabArm::HandleArmOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
 	// If we're already grabbing something or the overlap is invalid, ignore this overlap
 	if (_bIsGrabbing || !OtherActor)
 	{

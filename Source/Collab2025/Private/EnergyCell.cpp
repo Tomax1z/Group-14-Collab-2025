@@ -32,3 +32,10 @@ FName AEnergyCell::GetConsumableType_Implementation()
 	return "EnergyCell";
 }
 
+void AEnergyCell::OnPickUp_Implementation(AThePlayerCharacter* Picker)
+{
+	if (Picker)
+	{
+		Destroy();
+	}
+}

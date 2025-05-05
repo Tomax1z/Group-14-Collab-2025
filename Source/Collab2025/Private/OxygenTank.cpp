@@ -31,3 +31,11 @@ FName AOxygenTank::GetConsumableType_Implementation()
 {
 	return "OxygenTank";
 }
+
+void AOxygenTank::OnPickUp_Implementation(AThePlayerCharacter* Picker)
+{
+	if (Picker)
+	{
+		Destroy();
+	}
+}

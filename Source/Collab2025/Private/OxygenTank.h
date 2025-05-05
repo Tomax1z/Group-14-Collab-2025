@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "IConsumable.h"
 #include "IGrabbable.h"
+#include "IPickUpable.h"
 #include "GameFramework/Actor.h"
 #include "OxygenTank.generated.h"
 
 UCLASS()
-class COLLAB2025_API AOxygenTank : public AActor, public IIGrabbable, public IIConsumable
+class COLLAB2025_API AOxygenTank : public AActor, public IIGrabbable, public IIConsumable, public IIPickUpable
 {
 	GENERATED_BODY()
 public:
@@ -29,4 +30,6 @@ protected:
 
 public:
 	virtual FName GetConsumableType_Implementation() override;
+
+	virtual void OnPickUp_Implementation(AThePlayerCharacter* Picker) override;
 };

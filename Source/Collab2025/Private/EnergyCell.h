@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "IConsumable.h"
 #include "IGrabbable.h"
+#include "IPickUpable.h"
 #include "GameFramework/Actor.h"
 #include "EnergyCell.generated.h"
 
 UCLASS()
-class COLLAB2025_API AEnergyCell : public AActor, public IIConsumable, public IIGrabbable
+class COLLAB2025_API AEnergyCell : public AActor, public IIConsumable, public IIGrabbable, public IIPickUpable
 {
 	GENERATED_BODY()
 
@@ -29,4 +30,6 @@ protected:
 	virtual void BeginPlay() override;
 	
 	virtual FName GetConsumableType_Implementation() override;
+
+	virtual void OnPickUp_Implementation(AThePlayerCharacter* Picker) override;
 };
