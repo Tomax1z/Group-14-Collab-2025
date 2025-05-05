@@ -29,6 +29,8 @@ public:
 	float _MoveSpeedBase = 100.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
 	float _MoveSpeedSprint = 300.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	bool _PowerDown = true;
 	UPROPERTY(EditAnywhere, Category="Movement Paramaters")
 	bool _Loop;
 	UPROPERTY()
