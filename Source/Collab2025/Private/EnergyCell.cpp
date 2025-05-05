@@ -16,7 +16,7 @@ AEnergyCell::AEnergyCell()
 	_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	_Mesh->SetupAttachment(_Root);
 
-	_Collision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision"));
+	_Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	_Collision->SetupAttachment(_Mesh);
 }
 

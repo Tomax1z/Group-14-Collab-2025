@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GrabArm.h"
@@ -35,7 +36,9 @@ public:
 	bool _Loop;
 	UPROPERTY()
 	float _SplineLength;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawn")
+	TObjectPtr<UArrowComponent> _SpawnPoint;
+	
 	UPROPERTY()
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -48,7 +51,11 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<AGrabArm> _GrabArm;
+	
 
+	UFUNCTION(BlueprintCallable, Category="Spawn")
+	AActor* SpawnActorAtPoint(TSubclassOf<AActor> ActorClass);
+	
 	UFUNCTION()
 	void MoveMech(float influence);
 

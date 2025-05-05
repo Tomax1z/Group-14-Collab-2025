@@ -200,19 +200,16 @@ void AGrabArm::ReleaseGrabbedObject()
 		{
 			FName ConsumableType = IIConsumable::Execute_GetConsumableType(_GrabbedObject);
 			UE_LOG(LogTemp, Warning, TEXT("Consumable Type: %s"), *ConsumableType.ToString());
-
-			if (PlayerCharacter && ConsumableType == "OxygenTank")
+			if (_ProtoMechRef)
 			{
-				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
-				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Oxygen Tanks Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+				UE_LOG(LogTemp, Warning, TEXT("ProtoMech Ref"));
+				_ProtoMechRef->SpawnActorAtPoint(_GrabbedObject->GetClass());
 			}
-			if (PlayerCharacter && ConsumableType == "EnergyCell")
+			else
 			{
-				PlayerCharacter->_NumOfPowerCells += 1.0f;
-				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfPowerCells);
+				UE_LOG(LogTemp, Warning, TEXT("ProtoMech Ref none"));
 			}
+			_GrabbedObject->Destroy();
 		}
 		
 		_GrabbedObject = nullptr;

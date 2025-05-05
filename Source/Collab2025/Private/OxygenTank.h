@@ -6,6 +6,7 @@
 #include "IConsumable.h"
 #include "IGrabbable.h"
 #include "IPickUpable.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "OxygenTank.generated.h"
 
@@ -22,7 +23,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> _Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> _Collision;
+	TObjectPtr<UBoxComponent> _Collision;
 
 protected:
 	// Called when the game starts or when spawned

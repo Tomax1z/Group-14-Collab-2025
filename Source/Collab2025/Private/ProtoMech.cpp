@@ -20,6 +20,10 @@ AProtoMech::AProtoMech()
 	
 	_MechSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Mech Spline"));
 	//_MechSpline -> SetupAttachment(_MechMesh);
+
+	_SpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("SpawnPoint"));
+	_SpawnPoint->SetupAttachment(_MechMesh);
+	_SpawnPoint->SetArrowColor(FColor::Green);
 }
 
 // Called when the game starts or when spawned
@@ -120,4 +124,32 @@ void AProtoMech::SetSprintStatus_Implementation(bool bIsSprinting)
 	{
 		UE_LOG(LogTemp, Log, TEXT("ProtoMech speed not set"));
 	}
+}
+
+AActor* AProtoMech::SpawnActorAtPoint(TSubclassOf<AActor> ActorClass)
+{
+	if (!ActorClass || !GetWorld() || !_SpawnPoint) 
+		return nullptr;
+
+	FTransform spawnTransform;
+	spawnTransform.SetLocation(_SpawnPoint->GetComponentLocation());
+	spawnTransform.SetRotation(_SpawnPoint->GetComponentQuat());
+
+	FActorSpawnParameters params;
+	params.Owner = this;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AActor* NewActor = GetWorld()->SpawnActor<AActor>(ActorClass, spawnTransform, params);
+
+	TArray<UPrimitiveComponent*> Prims;
+	NewActor->GetComponents<UPrimitiveComponent>(Prims);
+
+	for (UPrimitiveComponent* Prim : Prims)
+	{
+		// enable physics + gravity
+		Prim->SetSimulatePhysics(true);
+		Prim->SetEnableGravity(true);
+		Prim->WakeAllRigidBodies();
+	}
+	return NewActor;
 }
