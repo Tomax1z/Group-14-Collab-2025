@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "ISpeedRatioReceivable.h"
+#include "Collab2025/PlayerCharacter/ThePlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -24,6 +25,14 @@ AProtoMech::AProtoMech()
 	_SpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("SpawnPoint"));
 	_SpawnPoint->SetupAttachment(_MechMesh);
 	_SpawnPoint->SetArrowColor(FColor::Green);
+
+	_OxygenSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("OxygenSpawnPoint"));
+	_OxygenSpawnPoint->SetupAttachment(_MechMesh);
+	_OxygenSpawnPoint->SetArrowColor(FColor::Cyan);
+
+	_EnergySpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("EnergySpawnPoint"));
+	_EnergySpawnPoint->SetupAttachment(_MechMesh);
+	_EnergySpawnPoint->SetArrowColor(FColor::Yellow);
 }
 
 // Called when the game starts or when spawned
@@ -126,6 +135,50 @@ void AProtoMech::SetSprintStatus_Implementation(bool bIsSprinting)
 	}
 }
 
+AActor* AProtoMech::SpawnPickupAtArrow(TSubclassOf<AActor> PickupClass, UArrowComponent* SpawnArrow)
+{
+	if (!PickupClass || !SpawnArrow || !GetWorld())
+	{
+		return nullptr;
+	}
+
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SpawnArrow->GetComponentLocation());
+	SpawnTransform.SetRotation(SpawnArrow->GetComponentQuat());
+
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AActor* NewPickup = GetWorld()->SpawnActor<AActor>(PickupClass, SpawnTransform, Params);
+	if (NewPickup)
+	{
+		TArray<UPrimitiveComponent*> Prims;
+		NewPickup->GetComponents<UPrimitiveComponent>(Prims);
+		for (auto* Prim : Prims)
+		{
+			Prim->SetSimulatePhysics(false);
+			Prim->SetEnableGravity(false);
+		}
+
+		NewPickup->AttachToComponent(SpawnArrow, FAttachmentTransformRules::KeepWorldTransform);
+	}
+
+	return NewPickup;
+}
+
+void AProtoMech::SpawnOxygenPickup()
+{
+	SpawnPickupAtArrow(_OxygenTankPickupClass, _OxygenSpawnPoint);
+	_CurrentOxygenPickup = SpawnPickupAtArrow(_OxygenTankPickupClass, _OxygenSpawnPoint);
+}
+
+void AProtoMech::SpawnEnergyPickup()
+{
+	SpawnPickupAtArrow(_EnergyCellPickupClass, _EnergySpawnPoint);
+	_CurrentEnergyPickup = SpawnPickupAtArrow(_EnergyCellPickupClass, _EnergySpawnPoint);
+}
+
 AActor* AProtoMech::SpawnActorAtPoint(TSubclassOf<AActor> ActorClass)
 {
 	if (!ActorClass || !GetWorld() || !_SpawnPoint)
@@ -148,11 +201,53 @@ AActor* AProtoMech::SpawnActorAtPoint(TSubclassOf<AActor> ActorClass)
 
 	for (UPrimitiveComponent* Prim : Prims)
 	{
-		// enable physics + gravity
 		Prim->SetSimulatePhysics(true);
 		Prim->SetEnableGravity(true);
-		Prim->WakeAllRigidBodies();
 	}
 
 	return NewActor;
+}
+
+void AProtoMech::MechReplaceOxygen()
+{
+	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	if (AThePlayerCharacter* PC = Cast<AThePlayerCharacter>(Pawn))
+	{
+		PC->PlayerReplaceOxygen();
+	}
+}
+
+void AProtoMech::MechReplacePower()
+{
+	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	if (AThePlayerCharacter* PC = Cast<AThePlayerCharacter>(Pawn))
+	{
+		PC->PlayerReplacePowerCell();
+	}
+}
+void AProtoMech::DestroyOxygenPickup()
+{
+	if (_CurrentOxygenPickup)
+	{
+		_CurrentOxygenPickup->Destroy();
+		UE_LOG(LogTemp, Warning, TEXT("Destroying Oxygen pickup"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Destroying Oxygen pickup FAIL;"));
+	}
+	_CurrentOxygenPickup = nullptr;
+}
+void AProtoMech::DestroyEnergyPickup()
+{
+	if (_CurrentEnergyPickup)
+	{
+		_CurrentEnergyPickup->Destroy();
+		UE_LOG(LogTemp, Warning, TEXT("Destroying energy pickup"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Destroying energy pickup FAIL"));
+	}
+	_CurrentEnergyPickup = nullptr;
 }

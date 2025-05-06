@@ -2,7 +2,8 @@
 
 
 #include "ThePlayerCharacter.h"
-
+#include "IConsumable.h"
+#include "IPickUpable.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -108,44 +109,80 @@ void AThePlayerCharacter::BeginPlay()
 
 void AThePlayerCharacter::PickupObject(AActor* ObjectToPickup)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PickedUp"));
-
-	if (!ObjectToPickup)
+	if (!ObjectToPickup || bIsHoldingObject)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FAILED"));
 		return;
 	}
 
-	USceneComponent* RootComp = ObjectToPickup->GetRootComponent();
-	if (!RootComp)
+	if (!ObjectToPickup->GetClass()->ImplementsInterface(UIPickUpable::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PickupObject: no RootComponent"));
 		return;
 	}
 
-	if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(RootComp))
+	bIsHoldingObject = true;
+
+	if (ObjectToPickup->GetClass()->ImplementsInterface(UIConsumable::StaticClass()))
 	{
-		if (Prim->IsSimulatingPhysics())
+		const FName ConsumableType = IIConsumable::Execute_GetConsumableType(ObjectToPickup);
+
+		if (ConsumableType == TEXT("OxygenTank"))
 		{
-			Prim->SetSimulatePhysics(false);
-			Prim->SetEnableGravity(false);
+			UE_LOG(LogTemp, Warning, TEXT("Oxygen"));
+			_NumOfOxygenTanks += 1;
+		}
+		else if (ConsumableType == TEXT("EnergyCell"))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("energy"));
+			_NumOfPowerCells += 1;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Picked up consumable with unexpected type '%s'"), *ConsumableType.ToString());
 		}
 	}
-
-	RootComp->SetMobility(EComponentMobility::Movable);
-
-	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-
-	RootComp->AttachToComponent(_HoldArrow, Rules);
-
-	RootComp->SetRelativeLocation(FVector::ZeroVector);
-	RootComp->SetRelativeRotation(FRotator::ZeroRotator);
-
-	UE_LOG(LogTemp, Log, TEXT("Picked up %s"), *ObjectToPickup->GetName());
+	if (AActor* ActorToDestroy = Cast<AActor>(ObjectToPickup))
+	{
+		ActorToDestroy->Destroy();
+	}
 }
+
 
 // Called to bind functionality to input
 void AThePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+AProtoMech* AThePlayerCharacter::GetProtoMech()
+{
+	UWorld* W = GetWorld();
+	if (!W) return nullptr;
+
+	return Cast<AProtoMech>(
+		UGameplayStatics::GetActorOfClass(W, AProtoMech::StaticClass())
+	);
+}
+
+void AThePlayerCharacter::PlayerSpawnOxygen()
+{
+	if (AProtoMech* ProtoMech = GetProtoMech())
+	{
+		ProtoMech->SpawnOxygenPickup();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No ProtoMech found in world"));
+	}
+}
+
+void AThePlayerCharacter::PlayerSpawnEnergy()
+{
+	if (AProtoMech* ProtoMech = GetProtoMech())
+	{
+		ProtoMech->SpawnEnergyPickup();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No ProtoMech found in world"));
+	}
 }
