@@ -183,13 +183,14 @@ void AGrabArm::ReleaseGrabbedObject()
 {
 	if (_GrabbedObject)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Overlap"));
+
 		// Notify the object it's been released
 		IIGrabbable::Execute_OnReleasedGrab(_GrabbedObject, this);
 		
 		// Detach from the arm
 		_GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
         
-		// Re-enable physics if needed
 		UPrimitiveComponent* GrabbableRootComponent = Cast<UPrimitiveComponent>(_GrabbedObject->GetRootComponent());
 		if (GrabbableRootComponent)
 		{
@@ -198,21 +199,16 @@ void AGrabArm::ReleaseGrabbedObject()
 		
 		if(_GrabbedObject->GetClass()->ImplementsInterface(UIConsumable::StaticClass()))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Consumable"));
+
 			FName ConsumableType = IIConsumable::Execute_GetConsumableType(_GrabbedObject);
 			UE_LOG(LogTemp, Warning, TEXT("Consumable Type: %s"), *ConsumableType.ToString());
-
-			if (PlayerCharacter && ConsumableType == "OxygenTank")
+			if (_ProtoMechRef)
 			{
-				PlayerCharacter->_NumOfOxygenTanks += 1.0f;
-				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Oxygen Tanks Now: %f"), PlayerCharacter->_NumOfOxygenTanks);
+				UE_LOG(LogTemp, Warning, TEXT("ProtoMech Ref"));
+				_ProtoMechRef->SpawnActorAtPoint(_GrabbedObject->GetClass());
 			}
-			if (PlayerCharacter && ConsumableType == "EnergyCell")
-			{
-				PlayerCharacter->_NumOfPowerCells += 1.0f;
-				_GrabbedObject->Destroy();
-				UE_LOG(LogTemp, Warning, TEXT("Energy Cells Now: %f"), PlayerCharacter->_NumOfPowerCells);
-			}
+			_GrabbedObject->Destroy();
 		}
 		
 		_GrabbedObject = nullptr;
@@ -223,6 +219,7 @@ void AGrabArm::ReleaseGrabbedObject()
 void AGrabArm::HandleArmOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
 	// If we're already grabbing something or the overlap is invalid, ignore this overlap
 	if (_bIsGrabbing || !OtherActor)
 	{

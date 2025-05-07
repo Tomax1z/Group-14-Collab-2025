@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GrabArm.h"
@@ -29,11 +30,20 @@ public:
 	float _MoveSpeedBase = 100.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
 	float _MoveSpeedSprint = 300.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement Paramaters")
+	bool _PowerDown = false;
 	UPROPERTY(EditAnywhere, Category="Movement Paramaters")
 	bool _Loop;
 	UPROPERTY()
 	float _SplineLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawn")
+	TObjectPtr<UArrowComponent> _SpawnPoint;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
+	TObjectPtr<AActor> _CurrentOxygenPickup = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
+	TObjectPtr<AActor> _CurrentEnergyPickup = nullptr;
+	
 	UPROPERTY()
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -47,6 +57,36 @@ public:
 	UPROPERTY()
 	TObjectPtr<AGrabArm> _GrabArm;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup|SpawnPoints", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UArrowComponent> _OxygenSpawnPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup|SpawnPoints", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UArrowComponent> _EnergySpawnPoint;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup|Classes")
+	TSubclassOf<AActor> _OxygenTankPickupClass;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup|Classes")
+	TSubclassOf<AActor> _EnergyCellPickupClass;
+	
+	UFUNCTION(BlueprintCallable, Category="Pickup|Spawn")
+	AActor* SpawnPickupAtArrow(TSubclassOf<AActor> PickupClass, UArrowComponent* SpawnArrow);
+
+	UFUNCTION(BlueprintCallable, Category="Pickup|Spawn")
+	void SpawnOxygenPickup();
+
+	UFUNCTION(BlueprintCallable, Category="Pickup|Spawn")
+	void SpawnEnergyPickup();
+	
+	UFUNCTION(BlueprintCallable, Category="Spawn")
+	AActor* SpawnActorAtPoint(TSubclassOf<AActor> ActorClass);
+	UFUNCTION(BlueprintCallable, Category="Pickup|Manage")
+	void DestroyOxygenPickup();
+	UFUNCTION(BlueprintCallable, Category="Pickup|Manage")
+	void DestroyEnergyPickup();
+	UFUNCTION(BlueprintCallable, Category="Player Interaction")
+	void MechReplaceOxygen();
+	UFUNCTION(BlueprintCallable, Category="Player Interaction")
+	void MechReplacePower();
 	UFUNCTION()
 	void MoveMech(float influence);
 
