@@ -90,6 +90,11 @@ public:
 	UFUNCTION()
 	void MoveMech(float influence);
 
+	UPROPERTY(blueprintReadWrite, EditAnywhere, Category="Cracks")
+	TArray<AActor*> _LeftCracks;
+	UPROPERTY(blueprintReadWrite, EditAnywhere, Category="Cracks")
+	TArray<AActor*> _RightCracks;
+	
 	UFUNCTION(BlueprintCallable, Category="Grab Arm")
 	void SpawnGrabArm();
 
