@@ -40,6 +40,8 @@ void AProtoMech::BeginPlay()
 {
 	Super::BeginPlay();
 	_MoveSpeed = _MoveSpeedBase;
+	hasEnergyCell = false;
+	hasOxygenTank = false;
 	SpawnGrabArm();
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	if (PlayerPawn && PlayerPawn->GetClass()->ImplementsInterface(UISpeedRatioReceivable::StaticClass()))

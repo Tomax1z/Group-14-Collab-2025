@@ -105,6 +105,7 @@ void AThePlayerCharacter::SetSpeedRatio_Implementation(float SprintSpeed, float 
 void AThePlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	hasOxygen = false;
 }
 
 void AThePlayerCharacter::PickupObject(AActor* ObjectToPickup)
@@ -129,11 +130,15 @@ void AThePlayerCharacter::PickupObject(AActor* ObjectToPickup)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Oxygen"));
 			_NumOfOxygenTanks += 1;
+			_CodeMechRef->hasOxygenTank = true;
+			hasOxygen = true;
+			
 		}
 		else if (ConsumableType == TEXT("EnergyCell"))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("energy"));
 			_NumOfPowerCells += 1;
+			_CodeMechRef->hasEnergyCell = true;
 		}
 		else
 		{
@@ -146,6 +151,12 @@ void AThePlayerCharacter::PickupObject(AActor* ObjectToPickup)
 	}
 }
 
+
+void AThePlayerCharacter::MechReference()
+{
+	AActor* mech = UGameplayStatics::GetActorOfClass(GetWorld(), AProtoMech::StaticClass());
+	_CodeMechRef = Cast<AProtoMech>(mech);
+}
 
 // Called to bind functionality to input
 void AThePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

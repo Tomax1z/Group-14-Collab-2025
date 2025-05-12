@@ -48,6 +48,9 @@ public:
 	float _NumOfOxygenTanks;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _NumOfPowerCells;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool hasOxygen;
 	
 
 public:
@@ -68,7 +71,7 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Sprint State")
 	bool bIsSprinting = false;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bIsHoldingObject;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -77,6 +80,9 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable, Category="Pickup")
 	void PickupObject(AActor* ObjectToPickup);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	AProtoMech* _CodeMechRef;
 
 	UCameraComponent* GetCamera() const
 	{
@@ -87,6 +93,9 @@ public:
 	void PlayerReplaceOxygen();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Resources")
 	void PlayerReplacePowerCell();
+
+	UFUNCTION(BlueprintCallable)
+	void MechReference();
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

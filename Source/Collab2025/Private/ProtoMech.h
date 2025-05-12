@@ -38,6 +38,10 @@ public:
 	float _SplineLength;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawn")
 	TObjectPtr<UArrowComponent> _SpawnPoint;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool hasOxygenTank;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool hasEnergyCell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TObjectPtr<AActor> _CurrentOxygenPickup = nullptr;
